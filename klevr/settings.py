@@ -25,7 +25,7 @@ SECRET_KEY = 'hmx2-cfr=gtskps^oz#&82fd24w(-5p)buu-5!xzsycay^i457'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'users',
+    'courses',
 ]
 
 MIDDLEWARE = [

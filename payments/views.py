@@ -13,6 +13,9 @@ from django.contrib.auth import settings
 from django.forms import ValidationError
 from json import dumps
 from urllib import request as rq, parse
+import secrets
+from rest_framework.views import APIView
+
 
 from .models import PaytmDataBase #,PaytmRefundDataBase
 
@@ -41,7 +44,20 @@ class PaytmRequest(LoginRequiredMixin, TemplateView):
 
         req_data.update(dict(map(lambda key:key, paytm_sets.items())))
 
-        req_data.update(dict(map(lambda key:key, self.request.POST.items())))
+        #req_data.update(dict(map(lambda key:key, self.request.POST.items())))
+        order_id = str(secrets.token_urlsafe(10))
+        amount = '10'
+
+        req_data.update({
+            "ORDER_ID": order_id,
+            "TXN_AMOUNT": amount,
+            "CUST_ID": str(self.request.user),
+        })
+
+        """PaytmDataBase.objects.update_or_create(
+            txn_user = str(self.request.user),
+        )"""
+
         req_data.pop('csrfmiddlewaretoken', None)
 
         return req_data
@@ -50,6 +66,7 @@ class PaytmRequest(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+
         ctx['paytm_req_data'] = self.get_payment_data()
 
         ctx['paytm_req_data'].update({
@@ -69,11 +86,20 @@ class PaytmResponse(TemplateView):
 
     template_name = 'paytm/response.html'
 
+    def update_user(self, request, *args, **kwargs):
+        user1 = request.user
+        PaytmDataBase.objects.update_or_create(
+            user = user1,
+        )
+
     def save_transection(self, response_data):
-        PaytmDataBase.objects.update_or_create(order_id=response_data.get('ORDERID'),
+        #user = request.user
+        PaytmDataBase.objects.update_or_create(
+                                order_id=response_data.get('ORDERID'),
                                 amount=response_data.get('TXNAMOUNT'),
                                 checksumhash=response_data.get('CHECKSUMHASH'),
-                                txn_id=response_data.get('TXNID'))
+                                txn_id=response_data.get('TXNID'),
+								status=response_data.get('STATUS'))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -95,6 +121,8 @@ class PaytmResponse(TemplateView):
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
 
 @login_required
 def paytm_transection_status(request):

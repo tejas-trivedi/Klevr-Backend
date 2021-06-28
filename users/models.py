@@ -65,3 +65,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         return f'{self.first_name} +" "+ {self.last_name}'
+
+
+
+class Personalisation(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    design = models.BooleanField(default=False)
+    programming = models.BooleanField(default=False)
+    finance = models.BooleanField(default=False)
+    marketing = models.BooleanField(default=False)
+    music = models.BooleanField(default=False)
+    writing = models.BooleanField(default=False)
+    film = models.BooleanField(default=False)
+    photography = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'User: {self.user}'
+
+

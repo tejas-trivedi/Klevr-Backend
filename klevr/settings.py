@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'hmx2-cfr=gtskps^oz#&82fd24w(-5p)buu-5!xzsycay^i457'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -39,8 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 
     'users',
+    'courses',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +89,10 @@ DATABASES = {
 }
 
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+
+CORS_ALLOW_ALL_ORIGINS=True
+
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -124,3 +132,24 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = "users.User"
+
+
+PAYTM_STAGING_URL = 'https://securegw-stage.paytm.in'
+PAYTM_PRODUCTION_URL = 'https://securegw.paytm.in'
+
+HOSTNAME = '127.0.0.1:8000'
+
+if DEBUG:
+    PAYTM_URL = PAYTM_STAGING_URL
+else:
+    PAYTM_URL = PAYTM_PRODUCTION_URL
+
+PAYTM_MERCHANT_KEY = '2&GuZIL5FviKKc@C' # replace with original merchangt key
+PAYTM_GATEWAY_SETTINGS = {
+    'MID':'NwJmrG74619619647764', # replace with original merchangt id or MID
+    'INDUSTRY_TYPE_ID':'Retail',
+    'WEBSITE':'APPSTAGING', # WEBSTAGING for websites -->> change this with production variables
+    'CHANNEL_ID':'WEB', #WEB for websites
+    'CALLBACK_URL':f'http://{HOSTNAME}/paytm/payment_response/', } # https:// if you are on production server
+
+PAYTM_SAVE_SUCCESS_TRANSECTIONS_ONLY = False

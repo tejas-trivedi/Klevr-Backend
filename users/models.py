@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     headline = models.TextField(blank=True)
     language = models.CharField(max_length=25, choices=LANGUAGES, default="NONE")
     link = models.URLField()
+    new_notif = models.BooleanField()
     is_active = models.BooleanField(default=True, null=False, blank=False)
     is_staff = models.BooleanField(default=False, null=False, blank=False)
     is_superuser = models.BooleanField(default=False, null=False, blank=False)

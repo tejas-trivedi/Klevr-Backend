@@ -82,18 +82,14 @@ class PaytmRequest(LoginRequiredMixin, TemplateView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class PaytmResponse(TemplateView):
+class PaytmResponse( TemplateView):
 
     template_name = 'paytm/response.html'
 
-    def update_user(self, request, *args, **kwargs):
-        user1 = request.user
-        PaytmDataBase.objects.update_or_create(
-            user = user1,
-        )
-
     def save_transection(self, response_data):
         #user = request.user
+        #print("YESSSS")
+        #print(self.request.user.email_id)
         PaytmDataBase.objects.update_or_create(
                                 order_id=response_data.get('ORDERID'),
                                 amount=response_data.get('TXNAMOUNT'),

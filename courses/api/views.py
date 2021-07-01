@@ -13,7 +13,6 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
 
-
 from .serializers import *
 from users.models import User
 from courses.models import *

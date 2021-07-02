@@ -127,23 +127,37 @@ class AddItemToCart(APIView):
 
         my_cart = Cart.objects.filter(user=request.user)
 
-
         cart = my_cart[0]
+        print(cart)
         item = request.data.get("item")
         quantity = request.data.get("quantity")
 
+        item_course = AllCourses.objects.filter(id=item)
+        #item_price = item_course.discounted_price
+        print(item_course.values_list('discounted_price', flat=True))
+
+        cart_item = CartItem()
+        #cart_item.line_item_total = item_price
+
+
         data = {
-            "cart": cart,
+            "cart": str(cart),
             "item": item,
             "quantity": quantity
         }
 
         serializer = CartItemSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            #serializer.save()
             response = {
-                "message": "Item has been added to the cart of user: "+ cart.user
+                "message": "Item has been added to the cart"
             }
+
+
+            #cart_item.save()
+
+
+
             return Response(
                 response,
                 status = status.HTTP_200_OK

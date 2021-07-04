@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import get_list_or_404
 from django.utils import timezone
+from django.db import models
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -19,6 +20,7 @@ from decimal import Decimal
 from .serializers import *
 from users.models import User
 from cart.models import *
+from courses.api.serializers import AllCoursesSerializer
 
 
 class MyCartListView(APIView):
@@ -32,6 +34,7 @@ class MyCartListView(APIView):
             context = {
                 "request": request,
             }
+
 
             my_cart_serializer = CartSerializer(cart, many=True, context=context)
             response = my_cart_serializer.data
@@ -48,8 +51,20 @@ class MyCartListView(APIView):
                 total_cart_amount += Decimal(response_temp[res]['line_item_total'])
 
             my_cart.total = total_cart_amount
-            print(my_cart.total)
+            #print(my_cart.total)
             #my_cart.save()
+
+            data = {
+                "amount": my_cart.total
+            }
+            print(data)
+
+            amount_update_serializer = CartSerializer(cart, data=data, partial=True)#, data=data, partial=True)
+            #print(amount_update_serializer.data[0]['total'])
+            if amount_update_serializer.is_valid():
+                print("True")
+                #print(amount_update_serializer.data[0]['total'])
+                amount_update_serializer.save()
 
             return Response(response, status=status.HTTP_200_OK)
 
@@ -128,35 +143,28 @@ class AddItemToCart(APIView):
         my_cart = Cart.objects.filter(user=request.user)
 
         cart = my_cart[0]
-        print(cart)
+        #print(cart)
         item = request.data.get("item")
         quantity = request.data.get("quantity")
 
         item_course = AllCourses.objects.filter(id=item)
         #item_price = item_course.discounted_price
-        print(item_course.values_list('discounted_price', flat=True))
-
-        cart_item = CartItem()
-        #cart_item.line_item_total = item_price
-
+        item_price = Decimal(list(item_course.values_list('discounted_price', flat=True))[0])
+        print(item_price)
 
         data = {
             "cart": str(cart),
             "item": item,
-            "quantity": quantity
+            "quantity": quantity,
+            "line_item_total": item_price*int(quantity),
         }
 
         serializer = CartItemSerializer(data=data)
         if serializer.is_valid():
-            #serializer.save()
+            serializer.save()
             response = {
                 "message": "Item has been added to the cart"
             }
-
-
-            #cart_item.save()
-
-
 
             return Response(
                 response,

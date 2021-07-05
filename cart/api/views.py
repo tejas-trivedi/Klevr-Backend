@@ -53,6 +53,7 @@ class MyCartListView(APIView):
             my_cart.total = total_cart_amount
             #print(my_cart.total)
             #my_cart.save()
+            print(total_cart_amount)
 
             data = {
                 "amount": my_cart.total
@@ -64,7 +65,7 @@ class MyCartListView(APIView):
             if amount_update_serializer.is_valid():
                 print("True")
                 #print(amount_update_serializer.data[0]['total'])
-                amount_update_serializer.save()
+                #amount_update_serializer.save()
 
             return Response(response, status=status.HTTP_200_OK)
 
@@ -116,7 +117,6 @@ class CreateMyCart(APIView):
             "user": request.user,
             #"items": items,
         }
-
         serializer = CartSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -132,6 +132,49 @@ class CreateMyCart(APIView):
                 {"message": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class UpdateMyCart(APIView):
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+
+        cart = Cart.objects.filter(user=request.user)
+        context = {
+                "request": request,
+            }
+        cart_item = CartItem.objects.filter(cart=cart[0])
+
+        #my_cart = Cart()
+        total_cart_amount = 0
+        cart_item_serializer = CartItemSerializer(cart_item, many=True, context=context)
+        response_temp = cart_item_serializer.data
+
+        for res in range(0, len(response_temp)):
+            total_cart_amount += Decimal(response_temp[res]['line_item_total'])
+
+        print(total_cart_amount)
+
+        data = {
+            "total": total_cart_amount,
+        }
+        serializer = CartSerializer(cart[0], data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                "message": "Your cart is updated"
+            }
+            return Response(
+                response,
+                status = status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 
 class AddItemToCart(APIView):

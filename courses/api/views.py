@@ -138,3 +138,242 @@ class LectureAddView(generics.CreateAPIView):
                 {"message": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+
+class AllCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.all()
+
+            all_serializer = AllCoursesSerializer(course, many=True,)
+            response = all_serializer.data
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProgrammingCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="PROGRAMMING")
+
+            programming_serializer = AllCoursesSerializer(course, many=True,)
+            response = programming_serializer.data
+
+            if (response==[]):
+                response = "No programming courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No programming course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class DesignCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="DESIGN")
+
+            design_serializer = AllCoursesSerializer(course, many=True,)
+            response = design_serializer.data
+
+            if (response==[]):
+                response = "No designing courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class FinanceCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="FINANCE")
+
+            finance_serializer = AllCoursesSerializer(course, many=True,)
+            response = finance_serializer.data
+
+            if (response==[]):
+                response = "No finance courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+class MarketingCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="MARKETING")
+
+            marketing_serializer = AllCoursesSerializer(course, many=True,)
+            response = marketing_serializer.data
+
+            if (response==[]):
+                response = "No marketing courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class MusicCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="MUSIC")
+
+            music_serializer = AllCoursesSerializer(course, many=True,)
+            response = music_serializer.data
+
+            if (response==[]):
+                response = "No music courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class WritingCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="WRITING")
+
+            writing_serializer = AllCoursesSerializer(course, many=True,)
+            response = writing_serializer.data
+
+            if (response==[]):
+                response = "No writing courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class FilmCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="FILM")
+
+            film_serializer = AllCoursesSerializer(course, many=True,)
+            response = film_serializer.data
+
+            if (response==[]):
+                response = "No film courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class PhotographyCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(category="PHOTOGRAPHY")
+
+            photography_serializer = AllCoursesSerializer(course, many=True,)
+            response = photography_serializer.data
+
+            if (response==[]):
+                response = "No photography courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class BeginnerCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(level="BEGINNER")
+
+            beginner_serializer = AllCoursesSerializer(course, many=True,)
+            response = beginner_serializer.data
+
+            if (response==[]):
+                response = "No beginner level courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class IntermediateCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(level="INTERMEDIATE")
+
+            intermediate_serializer = AllCoursesSerializer(course, many=True,)
+            response = intermediate_serializer.data
+
+            if (response==[]):
+                response = "No intermediate level courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+class AdvanceCoursesListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            course = AllCourses.objects.filter(level="ADVANCED")
+
+            advance_serializer = AllCoursesSerializer(course, many=True,)
+            response = advance_serializer.data
+
+            if (response==[]):
+                response = "No advance level courses available"
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except AllCourses.DoesNotExist:
+            errors = {"message":["No course found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)

@@ -12,6 +12,7 @@ from drf_yasg.utils import swagger_auto_schema
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 from .serializers import *
 from users.models import User
@@ -377,3 +378,16 @@ class AdvanceCoursesListView(APIView):
         except AllCourses.DoesNotExist:
             errors = {"message":["No course found"]}
             return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+class CourseDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk, *args, **kwargs):
+        course = get_object_or_404(AllCourses, id=pk)
+        serializer = AllCoursesSerializer(course)
+
+        response = serializer.data
+
+        return Response(response, status=status.HTTP_200_OK)

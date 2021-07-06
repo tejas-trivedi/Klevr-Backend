@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 )
 from django.core.validators import RegexValidator
 from django.db import models
+from courses.models import AllCourses
 
 
 class UserManager(BaseUserManager):
@@ -71,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Personalisation(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     design = models.BooleanField(default=False)
     programming = models.BooleanField(default=False)
     finance = models.BooleanField(default=False)
@@ -85,3 +86,11 @@ class Personalisation(models.Model):
         return f'User: {self.user}'
 
 
+
+class Wishlist(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    wishlist = models.ManyToManyField(AllCourses)
+
+    def __str__(self):
+        return f'User: {self.user}'

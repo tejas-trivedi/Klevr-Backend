@@ -15,7 +15,7 @@ class AllCoursesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AllCourses
-        fields = ('course_name', 'thumbnail', 'instructor_name', 'description',
+        fields = ('id', 'course_name', 'thumbnail', 'instructor_name', 'description',
                 'no_of_sections', 'no_of_lectures', 'language', 'original_price',
                 'discount_percentage', 'discounted_price', 'category', 'level', 'software')
 

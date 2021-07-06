@@ -15,5 +15,7 @@ urlpatterns = [
     path('writing/', WritingCoursesListView.as_view(), name='writing_courses_list'),
     path('film/', FilmCoursesListView.as_view(), name='film_courses_list'),
     path('photography/', PhotographyCoursesListView.as_view(), name='photography_courses_list'),
+
+    path('<int:pk>/', CourseDetailView.as_view()),
 ]
 

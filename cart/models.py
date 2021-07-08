@@ -21,4 +21,4 @@ class CartItem(models.Model):
     line_item_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     def __int__(self):
-        return self.cart.id
+        return str(self.id)

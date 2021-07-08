@@ -10,7 +10,6 @@ from courses.models import AllCourses
 
 class UserManager(BaseUserManager):
 
-
     def create_user(self, email_id, password):
 
         if not email_id:

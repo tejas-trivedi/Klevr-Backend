@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import User
+#from users.models import User
 import jsonfield
 
 
@@ -47,7 +47,7 @@ class AllCourses(models.Model):
     description = models.TextField()
     no_of_sections = models.PositiveIntegerField()
     no_of_lectures = models.PositiveIntegerField()
-    total_length = models.DurationField()
+    total_length = models.DurationField(default=0)
     language = models.CharField(max_length=25, choices=LANGUAGES, default="NONE")
     original_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     discount_percentage = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
@@ -82,4 +82,6 @@ class LectureVideos(models.Model):
 
     def __int__(self):
         return self.id
+
+
 

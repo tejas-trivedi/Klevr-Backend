@@ -15,6 +15,8 @@ from json import dumps
 from urllib import request as rq, parse
 import secrets
 from rest_framework.views import APIView
+from cart.models import *
+from decimal import Decimal
 
 
 from .models import PaytmDataBase #,PaytmRefundDataBase
@@ -46,7 +48,10 @@ class PaytmRequest(LoginRequiredMixin, TemplateView):
 
         #req_data.update(dict(map(lambda key:key, self.request.POST.items())))
         order_id = str(secrets.token_urlsafe(10))
-        amount = '10'
+
+        cart = Cart.objects.filter(user=self.request.user)
+        amount = str(Decimal(list(cart.values_list('total', flat=True))[0]))
+        print(amount)
 
         req_data.update({
             "ORDER_ID": order_id,

@@ -92,7 +92,7 @@ class Wishlist(models.Model):
     items = models.ManyToManyField(AllCourses, through='WishlistItem')
 
     def __str__(self):
-        return f'User: {self.user}'
+        return str(self.id)
 
 
 class WishlistItem(models.Model):

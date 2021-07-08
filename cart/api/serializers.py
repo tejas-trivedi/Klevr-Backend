@@ -12,7 +12,6 @@ from cart.models import *
 
 
 class CartSerializer(serializers.ModelSerializer):
-    #product = serializers.SerializerMethodField()
 
     class Meta:
         model = Cart
@@ -24,19 +23,12 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    #item = serializers.SerializerMethodField()
-    #item_title = serializers.SerializerMethodField()
-    #product = serializers.SerializerMethodField()
-    #price = serializers.SerializerMethodField()
 
     class Meta:
         model = CartItem
         fields = [
             "cart",
             "item",
-            #"item_title",
-            #"price",
-            #"product",
             "quantity",
             "line_item_total",
         ]

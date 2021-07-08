@@ -48,7 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     headline = models.TextField(blank=True)
     language = models.CharField(max_length=25, choices=LANGUAGES, default="NONE")
     link = models.URLField()
-    new_notif = models.BooleanField()
+    new_notif = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True, null=False, blank=False)
     is_staff = models.BooleanField(default=False, null=False, blank=False)
     is_superuser = models.BooleanField(default=False, null=False, blank=False)
@@ -89,7 +89,15 @@ class Personalisation(models.Model):
 class Wishlist(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    wishlist = models.ManyToManyField(AllCourses)
+    items = models.ManyToManyField(AllCourses, through='WishlistItem')
 
     def __str__(self):
-        return f'User: {self.user}'
+        return str(self.id)
+
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
+    item = models.ForeignKey(AllCourses, on_delete=models.CASCADE)
+
+    def __int__(self):
+        return self.wishlist.id

@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from django.shortcuts import get_list_or_404
 from django.utils import timezone
 from django.db import models
 from rest_framework import status
@@ -83,6 +82,43 @@ class CartItemsListView(APIView):
         try:
             cart = Cart.objects.filter(user=request.user)
 
+            cart1 = cart.values_list('items', flat=True)
+            print(len(cart1))
+            cart_item = CartItem.objects.filter(cart=cart[0])
+            #print(cart_item)
+
+            my_cart_courses_list = []
+
+            for i in range(0, len(cart1)):
+                course = AllCourses.objects.filter(id=str(cart1[i]))
+                all_serializer = AllCoursesSerializer(course, many=True,)
+                #print(all_serializer.data)
+                data_tba = all_serializer.data
+                my_cart_courses_list.append(data_tba)
+
+            print(my_cart_courses_list)
+            response = my_cart_courses_list
+
+            context = {
+                "request": request,
+            }
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except Cart.DoesNotExist:
+            errors = {"message":["No cart found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+"""class CartItemsListView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,*args,**kwargs):
+        try:
+            cart = Cart.objects.filter(user=request.user)
+
             cart1 = cart.values_list('id', flat=True)
             cart_item = CartItem.objects.filter(cart=cart[0])
 
@@ -102,7 +138,7 @@ class CartItemsListView(APIView):
 
         except Cart.DoesNotExist:
             errors = {"message":["No cart found"]}
-            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)"""
 
 
 
@@ -111,11 +147,9 @@ class CreateMyCart(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        #items = request.data.get("items")
 
         data = {
             "user": request.user,
-            #"items": items,
         }
         serializer = CartSerializer(data=data)
         if serializer.is_valid():
@@ -146,7 +180,6 @@ class UpdateMyCart(APIView):
             }
         cart_item = CartItem.objects.filter(cart=cart[0])
 
-        #my_cart = Cart()
         total_cart_amount = 0
         cart_item_serializer = CartItemSerializer(cart_item, many=True, context=context)
         response_temp = cart_item_serializer.data
@@ -186,12 +219,10 @@ class AddItemToCart(APIView):
         my_cart = Cart.objects.filter(user=request.user)
 
         cart = my_cart[0]
-        #print(cart)
         item = request.data.get("item")
         quantity = request.data.get("quantity")
 
         item_course = AllCourses.objects.filter(id=item)
-        #item_price = item_course.discounted_price
         item_price = Decimal(list(item_course.values_list('discounted_price', flat=True))[0])
         print(item_price)
 

@@ -23,29 +23,87 @@ from courses.api.serializers import AllCoursesSerializer
 
 
 
-class AddCourseToWishlist(APIView):
+class MyWishListView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,*args,**kwargs):
+        try:
+            cart = Wishlist.objects.filter(user=request.user)
+            print(cart)
+            context = {
+                "request": request,
+            }
+
+
+            my_wish_serializer = WishlistSerializer(cart, many=True, context=context)
+            response = my_wish_serializer.data
+
+
+            wish_item = WishlistItem.objects.filter(wishlist=cart[0])
+            wish_item_serializer = WishlistItemSerializer(wish_item, many=True, context=context)
+            response_temp = wish_item_serializer.data
+
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except Wishlist.DoesNotExist:
+            errors = {"message":["No Wishlist found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+class CreateMyWishlist(APIView):
     serializer_class = WishlistSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
 
-        #wish = Wishlist.objects.filter(user=request.user)
-
-        course_id = request.data.get("course_id")
-
-        wishlist_course = AllCourses.objects.filter(id=course_id)
-        print(wishlist_course[0])
-
         data = {
             "user": request.user,
-            "wishlist": wishlist_course[0],
         }
-
-        serializer = WishlistSerializer(data=data, partial=True)
+        serializer = WishlistSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             response = {
-                "message": "Item has been added to the Wishlist"
+                "message": "Your wishlist is ready"
+            }
+            return Response(
+                response,
+                status = status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+
+class AddItemToWishlist(APIView):
+    serializer_class = WishlistItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+
+        my_wish = Wishlist.objects.filter(user=request.user)
+
+        wish = my_wish[0]
+        print(wish)
+        #print(cart)
+        item = request.data.get("item")
+
+        data = {
+            "wishlist": str(wish),
+            "item": item,
+        }
+
+        serializer = WishlistItemSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                "message": "Item has been added to the wishlist"
             }
 
             return Response(

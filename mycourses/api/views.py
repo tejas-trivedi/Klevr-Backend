@@ -16,12 +16,10 @@ from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
 
-
 from .serializers import *
 from cart.models import *
 from users.models import User
 from courses.api.serializers import AllCoursesSerializer
-
 
 
 class MyCoursesListView(APIView):
@@ -30,26 +28,18 @@ class MyCoursesListView(APIView):
 
     def get(self,request,*args,**kwargs):
         try:
-            cart = Wishlist.objects.filter(user=request.user)
-            print(cart)
+            courses = MyCourses.objects.filter(user=request.user)
             context = {
                 "request": request,
             }
 
-
-            my_wish_serializer = WishlistSerializer(cart, many=True, context=context)
-            response = my_wish_serializer.data
-
-
-            wish_item = WishlistItem.objects.filter(wishlist=cart[0])
-            wish_item_serializer = WishlistItemSerializer(wish_item, many=True, context=context)
-            response_temp = wish_item_serializer.data
-
+            my_courses_serializer = MyCoursesSerializers(courses, many=True, context=context)
+            response = my_courses_serializer.data
 
             return Response(response, status=status.HTTP_200_OK)
 
-        except Wishlist.DoesNotExist:
-            errors = {"message":["No Wishlist found"]}
+        except MyCourses.DoesNotExist:
+            errors = {"message":["You dont have any courses section"]}
             return Response(errors, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -96,11 +86,9 @@ class AddCourseToMyCourses(APIView):
 
         course = my_courses_section[0]
         print(course)
-        #print(cart)
-        #item = request.data.get("item")
+
 
         data = {
-            #"wishlist": str(wish),
             "user": request.user,
             "courses": my_cart_items,
         }
@@ -123,71 +111,30 @@ class AddCourseToMyCourses(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-"""
-class AddCourseToMyCourses(APIView):
-    serializer_class = MyCoursesItems
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, *args, **kwargs):
-
-        my_cart = Cart.objects.filter(user=request.user)
-        my_courses_section = MyCourses.objects.filter(user=request.user)
-        print(my_courses_section[0])
-        print(len(my_cart))
-
-        for i in range(0, len(my_cart)):
-
-            course = list(my_cart.values_list('items', flat=True))[i]
-            print(course)
-
-            data = {
-                "my_course": str(my_courses_section[0]),
-                "course": course,
-            }
-
-            serializer = MyCoursesItemsSerializers(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                response = {
-                    "message": "Item has been added to the cart"
-                }
-
-                return Response(
-                    response,
-                    status = status.HTTP_200_OK
-                )
-            else:
-                return Response(
-                    {"message": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-"""
 
 
-class WishlistItemsListView(APIView):
+class MyCoursesItemsListView(APIView):
 
     permission_classes = [IsAuthenticated]
 
     def get(self,request,*args,**kwargs):
         try:
-            wish = Wishlist.objects.filter(user=request.user)
+            my_course = MyCourses.objects.filter(user=request.user)
 
-            wish1 = wish.values_list('items', flat=True)
-            print(len(wish1))
-            wish_item = WishlistItem.objects.filter(wishlist=wish[0])
-            #print(cart_item)
+            mycourses1 = my_course.values_list('courses', flat=True)
+            print(len(mycourses1))
 
-            my_wish_courses_list = []
+            my_courses_list = []
 
-            for i in range(0, len(wish1)):
-                course = AllCourses.objects.filter(id=str(wish1[i]))
+            for i in range(0, len(mycourses1)):
+                course = AllCourses.objects.filter(id=str(mycourses1[i]))
                 all_serializer = AllCoursesSerializer(course, many=True,)
                 #print(all_serializer.data)
                 data_tba = all_serializer.data
-                my_wish_courses_list.append(data_tba)
+                my_courses_list.append(data_tba)
 
-            print(my_wish_courses_list)
-            response = my_wish_courses_list
+            print(my_courses_list)
+            response = my_courses_list
 
             context = {
                 "request": request,
@@ -195,6 +142,6 @@ class WishlistItemsListView(APIView):
 
             return Response(response, status=status.HTTP_200_OK)
 
-        except Cart.DoesNotExist:
-            errors = {"message":["No cart found"]}
+        except MyCourses.DoesNotExist:
+            errors = {"message":["You haven't purchased any course yet"]}
             return Response(errors, status=status.HTTP_404_NOT_FOUND)

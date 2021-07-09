@@ -22,4 +22,5 @@ urlpatterns = [
     path('course/', include("courses.api.urls")),
     path('cart/', include("cart.api.urls")),
     path('user/', include("users.api.urls")),
+    path('my_courses/', include("mycourses.api.urls")),
 ]

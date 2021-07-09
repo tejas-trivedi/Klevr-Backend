@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import *
 from users.models import User
@@ -386,8 +387,16 @@ class CourseDetailView(APIView):
 
     def get(self, request, pk, *args, **kwargs):
         course = get_object_or_404(AllCourses, id=pk)
-        serializer = AllCoursesSerializer(course)
 
+        serializer = AllCoursesSerializer(course)
         response = serializer.data
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+class CourseSearch(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = AllCourses.objects.all()
+    serializer_class = AllCoursesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['course_name', 'software', 'category']

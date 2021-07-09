@@ -17,5 +17,6 @@ urlpatterns = [
     path('photography/', PhotographyCoursesListView.as_view(), name='photography_courses_list'),
 
     path('<int:pk>/', CourseDetailView.as_view()),
+    path('search/', CourseSearch.as_view()),
 ]
 

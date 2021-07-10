@@ -21,6 +21,9 @@ from decimal import Decimal
 
 from .models import PaytmDataBase #,PaytmRefundDataBase
 
+from mycourses.models import MyCourses
+from mycourses.api.serializers import *
+
 paytm_sets = settings.PAYTM_GATEWAY_SETTINGS
 txn_status_url = '/merchant-status/getTxnStatus'
 txn_request_url = '/theia/processTransaction'
@@ -87,7 +90,7 @@ class PaytmRequest(LoginRequiredMixin, TemplateView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class PaytmResponse( TemplateView):
+class PaytmResponse(TemplateView):
 
     template_name = 'paytm/response.html'
 
@@ -101,6 +104,7 @@ class PaytmResponse( TemplateView):
                                 checksumhash=response_data.get('CHECKSUMHASH'),
                                 txn_id=response_data.get('TXNID'),
 								status=response_data.get('STATUS'))
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -119,6 +123,7 @@ class PaytmResponse( TemplateView):
 
         ctx['response_data'] = dumps(response_data)
         return ctx
+
 
     def post(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

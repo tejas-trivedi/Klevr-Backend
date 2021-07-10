@@ -115,3 +115,40 @@ class AddItemToWishlist(APIView):
                 {"message": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+
+class WishlistItemsListView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,*args,**kwargs):
+        try:
+            wish = Wishlist.objects.filter(user=request.user)
+
+            wish1 = wish.values_list('items', flat=True)
+            print(len(wish1))
+            wish_item = WishlistItem.objects.filter(wishlist=wish[0])
+            #print(cart_item)
+
+            my_wish_courses_list = []
+
+            for i in range(0, len(wish1)):
+                course = AllCourses.objects.filter(id=str(wish1[i]))
+                all_serializer = AllCoursesSerializer(course, many=True,)
+                #print(all_serializer.data)
+                data_tba = all_serializer.data
+                my_wish_courses_list.append(data_tba)
+
+            print(my_wish_courses_list)
+            response = my_wish_courses_list
+
+            context = {
+                "request": request,
+            }
+
+            return Response(response, status=status.HTTP_200_OK)
+
+        except Cart.DoesNotExist:
+            errors = {"message":["No cart found"]}
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)

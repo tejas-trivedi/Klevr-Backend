@@ -14,6 +14,7 @@ from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 from .serializers import *
 from users.models import User
@@ -398,5 +399,7 @@ class CourseSearch(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = AllCourses.objects.all()
     serializer_class = AllCoursesSerializer
+    #filter_backends = [filters.SearchFilter]
+    #search_fields = ['^course_name', '^software']
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['course_name', 'software', 'category']

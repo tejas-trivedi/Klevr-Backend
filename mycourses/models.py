@@ -17,6 +17,13 @@ class MyCourses(models.Model):
         return str(self.id)
 
 
+class MyCompletedCourses(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(AllCourses, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+
+
 """
 class MyCoursesItems(models.Model):
 

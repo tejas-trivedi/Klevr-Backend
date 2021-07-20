@@ -19,7 +19,7 @@ from decimal import Decimal
 from .serializers import *
 from cart.models import *
 from users.models import User
-from courses.api.serializers import AllCoursesSerializer
+from courses.api.serializers import AllCoursesSerializer, CourseSectionSerializer
 
 
 class MyCoursesListView(APIView):
@@ -145,3 +145,23 @@ class MyCoursesItemsListView(APIView):
         except MyCourses.DoesNotExist:
             errors = {"message":["You haven't purchased any course yet"]}
             return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+class MyCourseDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, *args, **kwargs):
+        course = get_object_or_404(AllCourses, id=pk)
+        print("Heyyyaaa")
+        print(course)
+
+        serializer = AllCoursesSerializer(course)
+        section_serializer = CourseSectionSerializer(1)
+
+        print(section_serializer.data)
+
+        response = serializer.data
+
+        return Response(response, status=status.HTTP_200_OK)

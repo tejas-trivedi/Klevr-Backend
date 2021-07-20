@@ -37,6 +37,6 @@ class JsonAdmin(admin.ModelAdmin):
 
 admin.site.register(AllCourses, JsonAdmin)
 admin.site.register(CourseSection, JsonAdmin)
-admin.site.register(LectureVideos, JsonAdmin)
+#admin.site.register(LectureVideos, JsonAdmin)
 
 # Register your models here.

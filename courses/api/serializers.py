@@ -44,7 +44,7 @@ class CourseSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseSection
         fields = ('course', 'section_no', 'section_title', 'no_of_videos',
-                'is_unlocked', 'section_description')
+                'is_unlocked', 'section_description', 'video_links')
 
         def create(self, validated_data):
             section = CourseSection(
@@ -54,11 +54,12 @@ class CourseSectionSerializer(serializers.ModelSerializer):
                 no_of_videos=validated_data["no_of_videos"],
                 is_unlocked=validated_data["is_unlocked"],
                 section_description=validated_data["section_description"],
+                video_links=validated_data["video_links"],
             )
             section.save()
             return section
 
-
+"""
 class LectureSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -72,3 +73,4 @@ class LectureSerializer(serializers.ModelSerializer):
             )
             lecture.save()
             return lecture
+"""

@@ -86,6 +86,7 @@ class CourseSectionView(generics.CreateAPIView):
         no_of_videos = request.data.get("no_of_videos")
         is_unlocked = request.data.get("is_unlocked")
         section_description = request.data.get("section_description")
+        video_links = request.data.get("video_links"),
 
         data = {
             "course": course,
@@ -94,13 +95,14 @@ class CourseSectionView(generics.CreateAPIView):
             "no_of_videos": no_of_videos,
             "is_unlocked": is_unlocked,
             "section_description": section_description,
+            "video_links": video_links,
         }
 
         serializer = CourseSectionSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             response = {
-                "message": "Section" + section_no + "has been added successfully to course: " + course
+                "message": "Section " + section_no + " has been added successfully to course: " + course
             }
             return Response(
                 response,
@@ -113,7 +115,7 @@ class CourseSectionView(generics.CreateAPIView):
             )
 
 
-class LectureAddView(generics.CreateAPIView):
+"""class LectureAddView(generics.CreateAPIView):
     serializer_class = LectureSerializer
     permission_classes = [IsAuthenticated]
 
@@ -141,7 +143,7 @@ class LectureAddView(generics.CreateAPIView):
                 {"message": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
+"""
 
 
 class AllCoursesListView(APIView):

@@ -19,6 +19,7 @@ from decimal import Decimal
 from .serializers import *
 from cart.models import *
 from users.models import User
+from courses.models import *
 from courses.api.serializers import AllCoursesSerializer, CourseSectionSerializer
 
 
@@ -153,15 +154,24 @@ class MyCourseDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, *args, **kwargs):
-        course = get_object_or_404(AllCourses, id=pk)
+        this_course = get_object_or_404(AllCourses, id=pk)
+
+        #section = get_object_or_404(CourseSection, course=this_course.id)
+        section = CourseSection.objects.filter(course=this_course)
+        print(len(section))
         print("Heyyyaaa")
-        print(course)
+        #print(this_course)
 
-        serializer = AllCoursesSerializer(course)
-        section_serializer = CourseSectionSerializer(1)
+        all_sections_data = []
 
-        print(section_serializer.data)
+        for i in range(0, len(section)):
+            section_serializer = CourseSectionSerializer(section[i])
+            all_sections_data.append(section_serializer.data)
 
-        response = serializer.data
+        print(all_sections_data)
+
+        response = {
+            "all_sections": all_sections_data
+        }
 
         return Response(response, status=status.HTTP_200_OK)

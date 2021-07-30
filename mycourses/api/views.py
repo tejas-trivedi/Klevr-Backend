@@ -15,6 +15,8 @@ from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
+import cv2
+import datetime
 
 from .serializers import *
 from cart.models import *
@@ -158,17 +160,26 @@ class MyCourseDetailView(APIView):
 
         #section = get_object_or_404(CourseSection, course=this_course.id)
         section = CourseSection.objects.filter(course=this_course)
-        print(len(section))
-        print("Heyyyaaa")
-        #print(this_course)
+
 
         all_sections_data = []
 
         for i in range(0, len(section)):
             section_serializer = CourseSectionSerializer(section[i])
-            all_sections_data.append(section_serializer.data)
+            videos = section_serializer.data['video_links']
+            print(videos["1"])
 
-        print(all_sections_data)
+            data = cv2.VideoCapture(videos["1"])
+            frames = data.get(cv2.CAP_PROP_FRAME_COUNT)
+            fps = int(data.get(cv2.CAP_PROP_FPS))
+
+            # calculate dusration of the video
+            seconds = int(frames / fps)
+            video_time = str(datetime.timedelta(seconds=seconds))
+            print("duration in seconds:", seconds)
+            print("video time:", video_time)
+
+            all_sections_data.append(section_serializer.data)
 
         response = {
             "all_sections": all_sections_data

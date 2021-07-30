@@ -70,11 +70,12 @@ class CourseSection(models.Model):
     no_of_videos = models.PositiveIntegerField()
     is_unlocked = models.BooleanField(default=False)
     section_description = models.TextField()
+    video_links = jsonfield.JSONField()
 
     def __str__(self):
         return self.section_title
 
-
+"""
 class LectureVideos(models.Model):
 
     course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE)
@@ -82,6 +83,6 @@ class LectureVideos(models.Model):
 
     def __int__(self):
         return self.id
-
+"""
 
 

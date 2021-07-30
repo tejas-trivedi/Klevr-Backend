@@ -5,7 +5,7 @@ from django.urls import path
 urlpatterns = [
     path('add/course/', AddCourseView.as_view(), name="add_course"),
     path('add/section/', CourseSectionView.as_view(), name="add_section"),
-    path('add/lecture/', LectureAddView.as_view(), name="add_section"),
+    #path('add/lecture/', LectureAddView.as_view(), name="add_section"),
     path('all/', AllCoursesListView.as_view(), name="all_courses_list"),
     path('programming/', ProgrammingCoursesListView.as_view(), name='programming_courses_list'),
     path('design/', DesignCoursesListView.as_view(), name='design_courses_list'),

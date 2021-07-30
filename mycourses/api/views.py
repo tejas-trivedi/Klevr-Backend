@@ -15,11 +15,14 @@ from rest_framework import generics, mixins, serializers, status
 from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
+import cv2
+import datetime
 
 from .serializers import *
 from cart.models import *
 from users.models import User
-from courses.api.serializers import AllCoursesSerializer
+from courses.models import *
+from courses.api.serializers import AllCoursesSerializer, CourseSectionSerializer
 
 
 class MyCoursesListView(APIView):
@@ -145,3 +148,41 @@ class MyCoursesItemsListView(APIView):
         except MyCourses.DoesNotExist:
             errors = {"message":["You haven't purchased any course yet"]}
             return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+class MyCourseDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, *args, **kwargs):
+        this_course = get_object_or_404(AllCourses, id=pk)
+
+        #section = get_object_or_404(CourseSection, course=this_course.id)
+        section = CourseSection.objects.filter(course=this_course)
+
+
+        all_sections_data = []
+
+        for i in range(0, len(section)):
+            section_serializer = CourseSectionSerializer(section[i])
+            videos = section_serializer.data['video_links']
+            print(videos["1"])
+
+            data = cv2.VideoCapture(videos["1"])
+            frames = data.get(cv2.CAP_PROP_FRAME_COUNT)
+            fps = int(data.get(cv2.CAP_PROP_FPS))
+
+            # calculate dusration of the video
+            seconds = int(frames / fps)
+            video_time = str(datetime.timedelta(seconds=seconds))
+            print("duration in seconds:", seconds)
+            print("video time:", video_time)
+
+            all_sections_data.append(section_serializer.data)
+
+        response = {
+            "all_sections": all_sections_data
+        }
+
+        return Response(response, status=status.HTTP_200_OK)

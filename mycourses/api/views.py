@@ -65,7 +65,7 @@ class CreateMyCoursesSection(APIView):
             }
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(
@@ -106,7 +106,7 @@ class AddCourseToMyCourses(APIView):
 
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(
@@ -181,8 +181,13 @@ class MyCourseDetailView(APIView):
 
             all_sections_data.append(section_serializer.data)
 
+            durations = []
+            durations.append(video_time)
+
+
         response = {
-            "all_sections": all_sections_data
+            "all_sections": all_sections_data,
+            "duration": durations
         }
 
         return Response(response, status=status.HTTP_200_OK)

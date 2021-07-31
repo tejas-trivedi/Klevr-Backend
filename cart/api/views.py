@@ -159,7 +159,7 @@ class CreateMyCart(APIView):
             }
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(
@@ -200,7 +200,7 @@ class UpdateMyCart(APIView):
             }
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(
@@ -242,7 +242,7 @@ class AddItemToCart(APIView):
 
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(

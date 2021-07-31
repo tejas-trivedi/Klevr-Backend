@@ -66,7 +66,7 @@ class AddCourseView(generics.CreateAPIView):
                     "Course has been added successfully"
                 ]
                 },
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(
@@ -106,7 +106,7 @@ class CourseSectionView(generics.CreateAPIView):
             }
             return Response(
                 response,
-                status = status.HTTP_200_OK
+                status = status.HTTP_201_CREATED
             )
         else:
             return Response(

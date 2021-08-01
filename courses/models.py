@@ -74,15 +74,3 @@ class CourseSection(models.Model):
 
     def __str__(self):
         return self.section_title
-
-"""
-class LectureVideos(models.Model):
-
-    course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE)
-    video_links = jsonfield.JSONField()
-
-    def __int__(self):
-        return self.id
-"""
-
-

@@ -23,14 +23,3 @@ class MyCompletedCourses(models.Model):
     course_id = models.ForeignKey(AllCourses, on_delete=models.CASCADE)
     is_completed = models.BooleanField(default=False)
 
-
-"""
-class MyCoursesItems(models.Model):
-
-    my_course = models.ForeignKey(MyCourses, on_delete=models.CASCADE)
-    course = models.ForeignKey(AllCourses, on_delete=models.CASCADE)
-
-    def __int__(self):
-        return str(self.id)
-"""
-

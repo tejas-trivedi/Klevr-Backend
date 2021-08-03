@@ -163,13 +163,16 @@ class MyCourseDetailView(APIView):
 
 
         all_sections_data = []
+        durations = []
 
         for i in range(0, len(section)):
             section_serializer = CourseSectionSerializer(section[i])
             videos = section_serializer.data['video_links']
-            print(videos["1"])
 
-            data = cv2.VideoCapture(videos["1"])
+            for i in range(1, len(videos)+1):
+                print(videos[str(i)])
+
+            """data = cv2.VideoCapture(videos[str(i)])
             frames = data.get(cv2.CAP_PROP_FRAME_COUNT)
             fps = int(data.get(cv2.CAP_PROP_FPS))
 
@@ -177,17 +180,15 @@ class MyCourseDetailView(APIView):
             seconds = int(frames / fps)
             video_time = str(datetime.timedelta(seconds=seconds))
             print("duration in seconds:", seconds)
-            print("video time:", video_time)
+            print("video time:", video_time)"""
 
+            #durations.append(video_time)
             all_sections_data.append(section_serializer.data)
-
-            durations = []
-            durations.append(video_time)
 
 
         response = {
             "all_sections": all_sections_data,
-            "duration": durations
+            #"duration": durations
         }
 
         return Response(response, status=status.HTTP_200_OK)

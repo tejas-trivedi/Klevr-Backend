@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'payments',
     'cart',
     'mycourses',
+    'webinar',
 ]
 
 MIDDLEWARE = [

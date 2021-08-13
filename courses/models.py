@@ -71,6 +71,8 @@ class CourseSection(models.Model):
     is_unlocked = models.BooleanField(default=False)
     section_description = models.TextField()
     video_links = jsonfield.JSONField()
+    #video_durations = jsonfield.JSONField()
+    #total_section_duration = models.DurationField
 
     def __str__(self):
         return self.section_title

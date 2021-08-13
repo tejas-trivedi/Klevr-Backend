@@ -34,10 +34,8 @@ class MyCartListView(APIView):
                 "request": request,
             }
 
-
             my_cart_serializer = CartSerializer(cart, many=True, context=context)
             response = my_cart_serializer.data
-
 
             cart_item = CartItem.objects.filter(cart=cart[0])
 
@@ -50,9 +48,6 @@ class MyCartListView(APIView):
                 total_cart_amount += Decimal(response_temp[res]['line_item_total'])
 
             my_cart.total = total_cart_amount
-            #print(my_cart.total)
-            #my_cart.save()
-            print(total_cart_amount)
 
             data = {
                 "amount": my_cart.total
@@ -63,8 +58,6 @@ class MyCartListView(APIView):
             #print(amount_update_serializer.data[0]['total'])
             if amount_update_serializer.is_valid():
                 print("True")
-                #print(amount_update_serializer.data[0]['total'])
-                #amount_update_serializer.save()
 
             return Response(response, status=status.HTTP_200_OK)
 

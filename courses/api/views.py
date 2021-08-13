@@ -15,6 +15,7 @@ from rest_framework.generics import CreateAPIView
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+import json
 
 from .serializers import *
 from users.models import User
@@ -88,6 +89,12 @@ class CourseSectionView(generics.CreateAPIView):
         section_description = request.data.get("section_description")
         video_links = request.data.get("video_links"),
 
+        #print(video_links)
+
+        json_data = json.dumps(video_links)
+        print(type(json_data))
+
+
         data = {
             "course": course,
             "section_no": section_no,
@@ -100,7 +107,7 @@ class CourseSectionView(generics.CreateAPIView):
 
         serializer = CourseSectionSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            #serializer.save()
             response = {
                 "message": "Section " + section_no + " has been added successfully to course: " + course
             }

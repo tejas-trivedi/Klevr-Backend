@@ -194,3 +194,42 @@ class MyCourseDetailView(APIView):
         }
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+
+class MyReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+
+        course_id = request.data.get("course")
+        review = request.data.get("review")
+
+        data = {
+            "user": request.user,
+            "course": course_id,
+            "review": review,
+        }
+
+        serializer = MyReviewSerializer(data=data)
+        if serializer.is_valid():
+            print("Yes")
+            serializer.save()
+            response = {
+                "message": "Your review has been posted successfully"
+            }
+
+            return Response(
+                response,
+                status = status.HTTP_200_OK
+            )
+
+        else:
+            return Response(
+                {
+                    "message": "Something went wrong!"
+                },
+                status = status.HTTP_400_BAD_REQUEST,
+            )
+
+

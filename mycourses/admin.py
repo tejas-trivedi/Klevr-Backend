@@ -3,5 +3,6 @@ from .models import *
 
 admin.site.register(MyCourses)
 admin.site.register(MyCompletedCourses)
+admin.site.register(MyReview)
 #admin.site.register(MyCoursesItems)
 # Register your models here.

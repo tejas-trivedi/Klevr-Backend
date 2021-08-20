@@ -194,3 +194,66 @@ class MyCourseDetailView(APIView):
         }
 
         return Response(response, status=status.HTTP_200_OK)
+
+
+
+class MyReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+
+        course_id = request.data.get("course")
+        review = request.data.get("review")
+
+        data = {
+            "user": request.user,
+            "course": course_id,
+            "review": review,
+        }
+
+        serializer = MyReviewSerializer(data=data)
+        if serializer.is_valid():
+            print("Yes")
+            serializer.save()
+            response = {
+                "message": "Your review has been posted successfully"
+            }
+
+            return Response(
+                response,
+                status = status.HTTP_200_OK
+            )
+
+        else:
+            return Response(
+                {
+                    "message": "Something went wrong!"
+                },
+                status = status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class AllReviewOnCourseView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+
+        course_id = self.request.query_params.get("course_id")
+        course = MyReview.objects.filter(course = course_id)
+        print(course)
+
+        reviews_list = []
+
+        for i in range(0, len(course)):
+            serializer = MyReviewSerializer(course[i])
+            reviews_list.append(serializer.data)
+
+        print(reviews_list)
+
+        response = {
+            "all_reviews": reviews_list,
+        }
+
+        return Response(response, status=status.HTTP_200_OK)
+

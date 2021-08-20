@@ -23,3 +23,12 @@ class MyCompletedCourses(models.Model):
     course_id = models.ForeignKey(AllCourses, on_delete=models.CASCADE)
     is_completed = models.BooleanField(default=False)
 
+
+class MyReview(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(MyCourses, on_delete=models.CASCADE)
+    review = models.TextField()
+
+    def __str__(self):
+        return str(self.id)

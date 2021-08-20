@@ -8,5 +8,7 @@ urlpatterns = [
     path('indexes/', MyCoursesListView.as_view(), name="my_courses_indexes_list"),
     path('list/', MyCoursesItemsListView.as_view(), name="my_courses_list"),
     path('detail/<pk>/', MyCourseDetailView.as_view()),
+    path('add_review/', MyReviewView.as_view()),
+    path('all_reviews/', AllReviewOnCourseView.as_view()),
 ]
 

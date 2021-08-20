@@ -22,6 +22,16 @@ class MyCoursesSerializers(serializers.ModelSerializer):
         ]
 
 
+class MyReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MyReview
+        fields = [
+            "user",
+            "course",
+            "review"
+        ]
+
 """class MyCoursesItemsSerializers(serializers.ModelSerializer):
 
     class Meta:
